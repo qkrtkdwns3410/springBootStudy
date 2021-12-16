@@ -49,6 +49,8 @@ public class BoardController {
 
     @PostMapping("/form")
     public String greetingSubmit(@Valid Board board, BindingResult bindingResult) {
+        boardValidation.validate(board, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "/board/form";
         }
