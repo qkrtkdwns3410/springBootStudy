@@ -26,12 +26,18 @@
             <input type="hidden" th:field="*{id}"/>
             <div class="form-group">
                 <label for="title">제목</label>
-                <input type="text" class="form-control" id="title" th:field="*{title}">
+                <input type="text" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" id="title" th:field="*{title}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">
+                    제목 2~ 30자 필수입니다.
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="content">글 내용</label>
-                <textarea class="form-control" id="content" th:field="*{content}" rows="3"></textarea>
+                <textarea class="form-control" id="content" th:field="*{content}" th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'" rows="3"></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                    내용 에러 메시지
+                </div>
             </div>
 
             <div class="text-right">

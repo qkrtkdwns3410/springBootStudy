@@ -2,6 +2,7 @@ package kr.co.psj.controller;
 
 import kr.co.psj.model.Board;
 import kr.co.psj.repository.BoardRepository;
+import kr.co.psj.validator.BoardValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,11 @@ public class BoardController {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private BoardValidation boardValidation;
+
     @GetMapping("/list")
+
     public String list(Model model) {
         List<Board> boards = boardRepository.findAll(); // DB의 데이터를 모두 들고 올 수 있습니다.
         model.addAttribute("boards", boards);
@@ -45,7 +50,7 @@ public class BoardController {
     @PostMapping("/form")
     public String greetingSubmit(@Valid Board board, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "board/form";
+            return "/board/form";
         }
         boardRepository.save(board);
         return "redirect:/board/list";
