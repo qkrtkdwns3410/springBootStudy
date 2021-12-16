@@ -4,6 +4,7 @@ import kr.co.psj.model.Board;
 import kr.co.psj.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
@@ -19,8 +20,14 @@ class BoardApiController {
     // Aggregate root
     // tag::get-aggregate-root[]
     @GetMapping("/boards")
-    List<Board> all() {
-        return repository.findAll();
+    List<Board> all(@RequestParam(required = false, defaultValue = "") String title, @RequestParam(required = false, defaultValue = "") String content) {
+        if (StringUtils.isEmpty(title) && StringUtils.isEmpty(content)) {
+            return repository.findAll();
+
+        } else {
+            return repository.findByTitleOrContent(title, content);
+        }
+
     }
     // end::get-aggregate-root[]
 
@@ -39,17 +46,17 @@ class BoardApiController {
     }
 
     @PutMapping("/boards/{id}")
-    Board replaceEmployee(@RequestBody Board board, @PathVariable Long id) {
+    Board replaceEmployee(@RequestBody Board newBoard, @PathVariable Long id) {
 
         return repository.findById(id)
-                .map(employee -> {
-                    board.setTitle(board.getTitle());
-                    board.setContent(board.getContent());
-                    return repository.save(employee);
+                .map(board -> {
+                    board.setTitle(newBoard.getTitle());
+                    board.setContent(newBoard.getContent());
+                    return repository.save(board);
                 })
                 .orElseGet(() -> {
-                    board.setId(id);
-                    return repository.save(board);
+                    newBoard.setId(id);
+                    return repository.save(newBoard);
                 });
     }
 
