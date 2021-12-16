@@ -50,9 +50,9 @@
             </thead>
             <tbody>
                 <tr th:each="board : ${boards}">
-                    <td th:text="${board.id}">마크</td>
-                    <td th:text="${board.title}">오토</td>
-                    <td>홍길동</td>
+                    <td th:text="${board.id}">번호</td>
+                    <td><a th:text="${board.title}" th:href="@{/board/form(id=${board.id})}">제목</a></td>
+                    <td>작성자</td>
                 </tr>
             </tbody>
         </table>
