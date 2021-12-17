@@ -41,12 +41,10 @@ public class BoardController {
         int startPage = 1;
         int endPage = boards.getTotalPages();
 
-        boards.getTotalElements();
 
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("boards", boards);
-        boards.getPageable().getPageNumber();
 
         log.info("endPage = {}", endPage);
         log.info("startPage = {}", startPage);
