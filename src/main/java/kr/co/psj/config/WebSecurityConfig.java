@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder()).usersByUsernameQuery("select username,password,enabled from user where email = ?").authoritiesByUsernameQuery("select username");
+        auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder()).usersByUsernameQuery("select username,password,enabled from user where username = ?").authoritiesByUsernameQuery("select username, name from role where ");
         //authority >> 권한처리 , Authentication >> 로그인 인증
     }
 
