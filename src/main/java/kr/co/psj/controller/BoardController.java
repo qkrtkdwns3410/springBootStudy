@@ -3,10 +3,12 @@ package kr.co.psj.controller;
 import kr.co.psj.model.Board;
 import kr.co.psj.repository.BoardRepository;
 import kr.co.psj.validator.BoardValidation;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/board")
+@Log4j2
 public class BoardController {
 
     @Autowired
@@ -33,11 +36,21 @@ public class BoardController {
 
     @GetMapping("/list")
 
-    public String list(Model model, Pageable pageable) {
+    public String list(Model model, @PageableDefault(size = 2) Pageable pageable) {
         Page<Board> boards = boardRepository.findAll(pageable); // DB의 데이터를 모두 들고 올 수 있습니다.
+        int startPage = 1;
+        int endPage = boards.getTotalPages();
 
         boards.getTotalElements();
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("boards", boards);
+        boards.getPageable().getPageNumber();
+
+        log.info("endPage = {}", endPage);
+        log.info("startPage = {}", startPage);
+        log.info("boards = {}", boards);
 
         return "/board/list";
     }
