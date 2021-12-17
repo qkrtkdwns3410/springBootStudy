@@ -7,44 +7,53 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
-    DataSource dataSource;
+    private DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests() // 인증 요청
-                .antMatchers("/", "/home").permitAll()
+                .authorizeRequests()
+                .antMatchers("/", "/css/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin() //로그인 폼
-                .loginPage("/login") // 로그인
+                .formLogin()
+                .loginPage("/account/login")
                 .permitAll()
                 .and()
-                .logout() // 로그아웃
+                .logout()
                 .permitAll();
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder()).usersByUsernameQuery("select username,password,enabled from user where username = ?").authoritiesByUsernameQuery("select username, name from role where ");
-        //authority >> 권한처리 , Authentication >> 로그인 인증
+    public void configureGlobal(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(new BCryptPasswordEncoder())
+                .usersByUsernameQuery("select username, password, enabled "
+                        + "from user "
+                        + "where username = ?")
+                .authoritiesByUsernameQuery("select u.username, r.name "
+                        + "from user_role ur inner join user u on ur.user_id = u.id "
+                        + "inner join role r on ur.role_id = r.id "
+                        + "where u.username = ?");
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
-
 
 
 
