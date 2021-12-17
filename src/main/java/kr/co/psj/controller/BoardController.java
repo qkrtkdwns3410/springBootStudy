@@ -6,7 +6,6 @@ import kr.co.psj.validator.BoardValidation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /*
 
@@ -36,8 +34,10 @@ public class BoardController {
 
     @GetMapping("/list")
 
-    public String list(Model model, @PageableDefault(size = 2) Pageable pageable) {
-        Page<Board> boards = boardRepository.findAll(pageable); // DB의 데이터를 모두 들고 올 수 있습니다.
+    public String list(Model model, @PageableDefault(size = 9) Pageable pageable, @RequestParam(required = false, defaultValue = "") String searchText) {
+//        Page<Board> boards = boardRepository.findAll(pageable); // DB의 데이터를 모두 들고 올 수 있습니다.
+        Page<Board> boards = boardRepository.findByTitleContainingOrContentContaining(pageable, searchText, searchText);
+
         int startPage = 1;
         int endPage = boards.getTotalPages();
 
