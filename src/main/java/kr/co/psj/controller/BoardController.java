@@ -46,6 +46,7 @@ public class BoardController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("boards", boards);
 
+        log.info("getTotalPages = {}", boards.getTotalPages());
         log.info("endPage = {}", endPage);
         log.info("startPage = {}", startPage);
         log.info("boards = {}", boards);
